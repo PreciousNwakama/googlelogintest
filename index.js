@@ -2,6 +2,8 @@
 const express = require('express');
 const app = express();
 const session = require('express-session');
+const mongoose = require('mongoose');
+const keys = require('./config/keys');
 
 app.set('view engine', 'ejs');
 
@@ -14,7 +16,10 @@ app.use(session({
 app.get('/', function (req, res) {
     res.render('pages/auth');
 });
-
+/* Database connection */
+mongoose.connect(keys.mongodb.dbURI), () => {
+    console.log('Connected to mongodb')
+}
 
 /*  PASSPORT SETUP  */
 
@@ -38,11 +43,13 @@ passport.deserializeUser(function (obj, cb) {
 });
 
 
-/*  Google AUTH  */
+// /*  Google AUTH  */
 
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-const GOOGLE_CLIENT_ID = '1038202354320-jfeekfd0qjjh7lb177n19satm3pvh0s2.apps.googleusercontent.com';
-const GOOGLE_CLIENT_SECRET = 'KYx40Ci2x94HXMMd38LBWB7-';
+const GOOGLE_CLIENT_ID = keys.google.clientID;
+const GOOGLE_CLIENT_SECRET = keys.google.clientSecret;
+// const GOOGLE_CLIENT_ID = '1038202354320-jfeekfd0qjjh7lb177n19satm3pvh0s2.apps.googleusercontent.com';
+// const GOOGLE_CLIENT_SECRET = 'KYx40Ci2x94HXMMd38LBWB7-';
 passport.use(new GoogleStrategy({
     clientID: GOOGLE_CLIENT_ID,
     clientSecret: GOOGLE_CLIENT_SECRET,
